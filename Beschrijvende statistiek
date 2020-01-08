@@ -1,0 +1,91 @@
+# Structuur dataset bekijken
+str(df)
+dim(df)
+head(df, 10)
+
+# Beschrijvende tabel voor enkel numerieke variabelen
+# Er zijn 2 manieren mogelijk:
+# Optie 1 is met SAPPLY-functie
+descr_numtab <- df %>% 
+  select_if(is.numeric)
+
+gemiddelde <- as.data.frame(round(sapply(descr_numtab, mean, na.rm = TRUE),1))
+mediaan <- as.data.frame(round(sapply(descr_numtab, median, na.rm = TRUE),1))
+minimum <- as.data.frame(round(sapply(descr_numtab, min, na.rm = TRUE),1))
+maximum <- as.data.frame(round(sapply(descr_numtab, max, na.rm = TRUE),1))
+sd <- as.data.frame(round(sapply(descr_numtab, sd, na.rm = TRUE),1))
+
+descr_tabel <- cbind(minimum, maximum, mediaan, gemiddelde, sd)
+
+colnames(descr_tabel) <- c("Minimum", "Maximum", "Mediaan", "Gemiddelde", "SD")
+descr_tabel
+
+# Optie 2 is met MUTATE functie van DPLYR
+# Beschrijvende tabel numerieke variabelen
+descr_num_tabel <- df %>% 
+  na.omit() %>% 
+  select_if(is.numeric) %>% 
+  summarise_each(funs(
+    gemiddelde = mean,
+    mediaan = median,
+    minimum = min,
+    maximum = max,
+    sd = sd))
+
+descr_num_tabel <- descr_num_tabel %>% 
+  gather(stat, val) %>%
+  separate(stat, into = c("var", "stat"), sep = "_") %>%
+  spread(stat, val) %>%
+  select(var, gemiddelde, mediaan, minimum, maximum,sd)
+
+descr_num_tabel %>% 
+  mutate_at(2:6, funs(round(.,1)))
+
+
+# Spreiding van alle numerieke data m.b.v. density plots
+dens_numplot <- df %>% 
+  keep(is.numeric) %>% 
+  gather() %>% 
+  ggplot(aes(x=value)) +
+  geom_density(alpha = 0.2, color = "dodgerblue4", fill = "dodgerblue1")  +
+  facet_wrap(~key, scales = "free") +
+  theme_classic() +
+  ggtitle("Verdeling continue variabelen")
+
+dens_numplot
+
+
+# Meer gedetailleerde histogram per continue variabele
+histogramplot <- function(column) {
+  
+  df %>% 
+    ggplot(aes_string(x =  column)) +
+    geom_histogram(color = "darkcyan", fill = "darkcyan", binwidth = 8, alpha = 0.4) +
+    stat_bin(aes(y = ..count.., label = ..count..), binwidth = 8, geom = "text", vjust = -0.5) +
+    geom_vline(aes(xintercept = mean(column)), color = "red", linetype = "solid", size = 2, alpha = 0.25) +
+    labs(title= paste("Verdeling van", column),x=column, y = "Aantal") +
+    theme_classic()
+}
+histogramplot("...")
+
+
+# Plot met verdeling van uitkomst beroerten naar leeftijdsgroepen
+# Leeftijd opdelen in 4 categorie?n: 0 (0-20), 1 (20-45), 2 (45-65), 3 (65-85), 4 (85+)
+leeftijdsgroep <- 
+  ifelse(df$leeftijd < 20,"0-20",
+         ifelse(df$leeftijd < 45 & df$leeftijd >= 20,"20-45",
+                ifelse(df$leeftijd < 65 & df$leeftijd >= 45,"45-65",
+                       ifelse(df$leeftijd < 85 & df$leeftijd >= 65,"65-85", "85+"))))
+
+uitkomstoverleeftijd <- ggplot(data = df, aes(x = leeftijdsgroep, fill = uitkomst)) +
+  geom_bar(aes(y = prop.table(..count..) * 100),
+           position = "dodge") + 
+  geom_text(aes(y = prop.table(..count..) * 100 + 0.5, 
+                label = paste0(round(prop.table(..count..),3) * 100, '%'), vjust = 0), 
+            stat = 'count', 
+            position = position_dodge(1), 
+            size = 3) + 
+  labs(title="Verdeling uitkomst", x = 'Leeftijdsgroep', y = 'Perc. verhouding', fill = 'Uitkomst aanwezig?') +
+  theme_classic()
+
+uitkomstoverleeftijd
