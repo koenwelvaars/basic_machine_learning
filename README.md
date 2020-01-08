@@ -17,4 +17,4 @@ Mocht je vragen of suggesties hebben over de code of  ideeën voor een volgende 
 In de toekomst zal ik meer R-code delen, zodat dit door een ieder te gebruiken is voor zijn/haar machine learning projecten.
 
 
-[a link](https://github.com/user/repo/blob/branch/other_file.md)
+[Beschrijvende statistiek](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Beschrijvende%20statistiek)
