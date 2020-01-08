@@ -1,0 +1,92 @@
+# Functie voor installeren pakketten
+pakketinstall <- function(pkg) {
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])] 
+  if (length(new.pkg))  
+    install.packages(new.pkg, dependencies = TRUE) 
+  sapply(pkg, require, character.only = TRUE) 
+}
+
+# Installeren en libraries inladen 
+packages <- c("...") 
+pakketinstall(packages)
+
+# Gebruikte pakketten in data prep, clean, analyse (tot aan RandomForest)
+
+# "ROCR", "mice", "VIM", "ggplot2", "DMwR", "randomForest", "caret", 
+# "dplyr", "pscl", "glmnet", "magrittr", "rpart", "rpart.plot", "ipred", 
+# "C50", "ggcorrplot", "factoextra", "stringr", "purrr", "tidyr", "reshape2", 
+# "RColorBrewer", "glmnet", "xgboost"
+
+# Inlezen van data
+getwd()
+setwd( "...")
+
+df <- read_csv("...")
+
+# Na inladen dubblecheck en alle vars terug zetten naar factors.
+df <- df %>%
+  mutate_at(vars(2,3,5,6,16:27), as.factor)
+
+str(df)
+View(df)
+
+# Laatste controle op missings
+colSums(is.na(df))
+
+
+# Random Forest-------------------------------------------------------------------------
+# Belangrijk: voor RandomForest is het niet nodig om je dataset te splitsen (bijv. 80% in train en 20% in test)
+# Dit komt doordat RandomForest automatisch 20% van je data achter voor testen en traint met 80%. 
+# De accuracy van de classificatie wordt uitgedrukt met de Out of Bag error (OOB error). Dit percentage geeft aan
+# hoeveel procent er FOUT geclassificeerd wordt. Trek dit percentage van 100% af om de accuracy van de classificatie te berekenen
+
+# Altijd set.seed gebruiken: hiermee is je resultaat herhaalbaar!
+set.seed(84)
+rf <-randomForest(df$uitkomst~.,data=df, ntree=500) 
+print(rf)
+View(rf)
+
+# Selecteren van de beste MTRY (hoeveel variabelen moet er bij elke node meegenomen worden)
+set.seed(84)
+str(df)
+mtry_df <- df[,-uitkomst]
+str(mtry_df)
+mtry <- tuneRF(mtry_df,df$uitkomst, ntreeTry=500,
+               stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE)
+
+best.m <- mtry[mtry[, 2] == min(mtry[, 2]), 1]
+print(mtry)
+print(best.m)
+
+# De beste MTRY (het aantal variabelen wat bij elke node wordt meegenomen) is ...
+
+# Nieuw randomForest obv beste MTRY
+set.seed(84)
+rf_mtry <-randomForest(df$uitkomst~.,data=df, mtry=best.m, importance=TRUE,ntree=500)
+print(rf_mtry)
+#Met de beste MTRY parameter is er een OOB-error van ... t.o.v. oorspronkelijke OOB-error van ...
+
+# Meest belangrijke variabelen (vergelijken tussen oorspronkelijk RF en RF met beste MTRY)
+varImpPlot(rf)
+varImpPlot(rf_mtry)
+
+
+# Berekenen van de uitkomstmaten
+
+rf$confusion
+tp <- rf$confusion[2,2]
+fp <- rf$confusion[2,1]
+tn <- rf$confusion[1,1]
+fn <- rf$confusion[1,2]
+sensrf <- tp / (tp + fn)
+specrf <- tn / (tn + fp)
+c(sensrf,specrf)
+
+# Berekenen van AUC van RF
+rf_p <- as.vector(rf$votes[,2])
+rf_pr <- prediction(rf_p, df$recidief)
+auc.rf <- performance(rf_pr, measure = "auc")@y.values[[1]]
+auc.rf <- round(auc.rf,2)
+auc.rf
+
+# accuracy = ..., sens = ..., spec = ..., AUC = ...
