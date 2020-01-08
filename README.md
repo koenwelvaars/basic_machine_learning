@@ -1,3 +1,5 @@
+
+
 # Machine learning voorbeelden in de gezondheidszorg
 Deze repository is opgezet om een ieder op weg te helpen die gebruik wil maken van machine learning middels programmeertaal R. De voorbeelden zijn stukken R-code die ingezet zijn om een classificatieprobleem voor machine learning project binnen het OLVG op te lossen. Binnen de stukken code kan je de eigen gekozen naamgeving voor de dataset en variabelen toepassen, om daarmee snel en gemakkelijk de code uit te voeren.
 
@@ -11,5 +13,5 @@ Voor de structurering van de code heb ik verschillende blokken geprepareerd, nam
 - Omgaan met outliers
 - Ontwikkelen van een RandomForest
 
-Mocht je vragen, ideeën of suggesties hebben over de code, neem gerust contact met mij op via k.welvaars@olvg.nl
+Mocht je vragen of suggesties hebben over de code of  ideeën voor een volgende post, neem gerust contact met mij op via k.welvaars@olvg.nl
 In de toekomst zal ik meer R-code delen, zodat dit door een ieder te gebruiken is voor zijn/haar machine learning projecten.
