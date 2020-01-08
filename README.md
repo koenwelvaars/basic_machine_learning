@@ -15,3 +15,6 @@ Voor de structurering van de code heb ik verschillende blokken geprepareerd, nam
 
 Mocht je vragen of suggesties hebben over de code of  ideeën voor een volgende post, neem gerust contact met mij op via k.welvaars@olvg.nl
 In de toekomst zal ik meer R-code delen, zodat dit door een ieder te gebruiken is voor zijn/haar machine learning projecten.
+
+
+[a link](https://github.com/user/repo/blob/branch/other_file.md)
