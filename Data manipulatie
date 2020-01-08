@@ -1,0 +1,65 @@
+# Controle op kolommen
+View(df)
+str(df)
+
+
+# Hernoemen van kolommen
+colnames(df)
+
+df <- df %>% 
+  rename(nieuw1 = 'oud1'
+         nieuw2 = 'oud2'
+         nieuw..n = 'oud..n')
+
+colnames(df)
+
+# Omzetten van numeriek naar nominaal (missings blijven NA)
+df <- df %>%
+  mutate_at(vars(...), 
+            function(x) 
+              case_when(
+                x == 0 ~ "Nee",
+                x == 1 ~ "Ja"))
+
+# Omzetten van numerieke waarden
+df <- df %>%
+  mutate_at(vars(...), 
+            function(x) 
+              case_when(
+                x == 1 ~ 1,
+                x == 2 ~ 0))
+
+# Omzetten/splitsen van bloeddruk naar boven- en onderdruk
+# let op: direct als integer omzetten, R zet deze standaard om naar factors!
+bp_splits <- str_split_fixed(df$bloeddruk, "/",2)
+bpboven <- as.integer(bp_splits[,1])
+bponder <- as.integer(bp_splits[,2])
+df <- cbind(df, bpboven, bponder)
+
+# Omzetten van specifieke variabelen naar andere datatypes
+# let op: bij het omzetten van factors naar numerics gaan de feitelijk waarden verloren en wordt enkel
+# de positie van de waarden in de vector weergegeven!
+df <- df %>%
+  mutate_at(vars(...), as.factor) %>%
+  mutate_at(vars(...), as.numeric) %>% 
+  mutate_at(vars(...), as.double)
+
+# Dataset transformeren in numerieke variabelen (bijv. voor correlatie analyse)
+df <- df %>% 
+  mutate(var1 = ifelse(var1 == 'Dit', 1, 0)) %>% 
+  mutate(var2 = ifelse(var2 == 'Dat', 1,0)) %>% 
+  mutate(var3 = ifelse(var3 == 'Wat dan ook', 1, 0)) %>% 
+  select(var1..varn)
+
+# Afronden van numerieke waarden
+df$... <- round(df$...)
+df$... <- round(df$...,1)
+df$... <- round(df$...,2)
+
+# Samenvoegen, naamgeving en ordenen variabelen in dataset
+df <- df[,c("...")]
+
+# Controle van dataset
+View(df)
+str(df)
+
