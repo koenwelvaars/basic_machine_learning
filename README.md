@@ -1,4 +1,4 @@
-
+![alt text](https://dazeinfo.com/wp-content/uploads/2019/11/Ai-in-healthcare.jpg)
 
 # Machine learning voorbeelden in de gezondheidszorg
 Deze repository is opgezet om een ieder op weg te helpen die gebruik wil maken van machine learning middels programmeertaal R. De voorbeelden zijn stukken R-code die ingezet zijn om een classificatieprobleem voor machine learning project binnen het OLVG op te lossen. Binnen de stukken code kan je de eigen gekozen naamgeving voor de dataset en variabelen toepassen, om daarmee snel en gemakkelijk de code uit te voeren.
