@@ -35,10 +35,6 @@ colSums(is.na(df))
 
 
 # Random Forest-------------------------------------------------------------------------
-# Belangrijk: voor RandomForest is het niet nodig om je dataset te splitsen (bijv. 80% in train en 20% in test)
-# Dit komt doordat RandomForest automatisch 20% van je data achter voor testen en traint met 80%. 
-# De accuracy van de classificatie wordt uitgedrukt met de Out of Bag error (OOB error). Dit percentage geeft aan
-# hoeveel procent er FOUT geclassificeerd wordt. Trek dit percentage van 100% af om de accuracy van de classificatie te berekenen
 
 # Altijd set.seed gebruiken: hiermee is je resultaat herhaalbaar!
 set.seed(84)
@@ -60,33 +56,59 @@ print(best.m)
 
 # De beste MTRY (het aantal variabelen wat bij elke node wordt meegenomen) is ...
 
-# Nieuw randomForest obv beste MTRY
+#Trainen RandomForest met 10-fold CV
+
 set.seed(84)
-rf_mtry <-randomForest(df$uitkomst~.,data=df, mtry=best.m, importance=TRUE,ntree=500)
-print(rf_mtry)
-#Met de beste MTRY parameter is er een OOB-error van ... t.o.v. oorspronkelijke OOB-error van ...
+rf <- train(uitkomst ~ vars,
+                  data = df.train,
+                  method = 'rf',
+                  trControl = trainControl(method = "repeatedcv",
+                                           number = 10,
+                                           savePredictions = "final",
+                                           classProbs = T),
+                  tuneLength = 1,
+                  importance = TRUE)
 
-# Meest belangrijke variabelen (vergelijken tussen oorspronkelijk RF en RF met beste MTRY)
-varImpPlot(rf)
-varImpPlot(rf_mtry)
+
+print(rf)
+preds <- predict(rf, df.test)
+confusionMatrix(preds, df.test$uitkomst)
+
+#AUC
+y.test = df.test$uitkomst
+auc <- prediction(as.numeric(preds), as.numeric(y.test))
+round(performance(auc, measure = "auc")@y.values[[1]],3)
 
 
-# Berekenen van de uitkomstmaten
+#accuracy         
+#sens              
+#spec             
+#precision (PPV)     
+#AUC        
 
-rf$confusion
-tp <- rf$confusion[2,2]
-fp <- rf$confusion[2,1]
-tn <- rf$confusion[1,1]
-fn <- rf$confusion[1,2]
-sensrf <- tp / (tp + fn)
-specrf <- tn / (tn + fp)
-c(sensrf,specrf)
+Feauture engineering: plotten belangrijke vars
 
-# Berekenen van AUC van RF
-rf_p <- as.vector(rf$votes[,2])
-rf_pr <- prediction(rf_p, df$recidief)
-auc.rf <- performance(rf_pr, measure = "auc")@y.values[[1]]
-auc.rf <- round(auc.rf,2)
-auc.rf
+varimp.rf <- varImp(rf)
+varimp.rf.rownames <- rf$importance
+varimp.rf.rownames <- rownames(varimp.rf.rownames)
 
-# accuracy = ..., sens = ..., spec = ..., AUC = ...
+df.varimp.rf <- varimp.rf %>% 
+  arrange(desc(varimp.rf$Overall))
+
+
+x <- varimp.rf.rownames
+x
+y <- df.varimp.rf$Overall
+y
+
+plot.varimp.rf <- ggplot(data = varimp.rf, aes(reorder(x,y), y = y)) + 
+  geom_bar(stat = "identity", aes(fill = Overall)) + 
+  coord_flip() + 
+  xlab("Variabelen") + 
+  ylab("Importantie") +
+  ggtitle("Waarde per variabele in RandomForest") +
+  labs(fill = "Waarde") +
+  theme_classic()
+
+plot(plot.varimp.rf)
+
