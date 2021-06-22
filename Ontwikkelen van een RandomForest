@@ -86,7 +86,7 @@ round(performance(auc, measure = "auc")@y.values[[1]],3)
 #precision (PPV)     
 #AUC        
 
-Feauture engineering: plotten belangrijke vars
+# Feauture engineering: plotten belangrijke vars
 
 varimp.rf <- varImp(rf)
 varimp.rf.rownames <- rf$importance
