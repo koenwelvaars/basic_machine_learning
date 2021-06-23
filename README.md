@@ -1,6 +1,6 @@
 ![alt text](https://dazeinfo.com/wp-content/uploads/2019/11/Ai-in-healthcare.jpg)
 
-# Machine learning example from my 1st project
+# Basic Machine Learning Examples
 In this repo you can find code of my first machine learning project: predicting recurrence of strokes at the department of Neurology. Everyone can use this code for his/her own projects, as I hope it will save everybody some time and understanding as to how to develop a machine learning model.
 
 Index of the code to topic:
