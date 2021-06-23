@@ -1,4 +1,4 @@
-# Analyse missing values
+# Analysis missing values
 sum(is.na(df))
 colSums(is.na(df))
 
@@ -6,18 +6,18 @@ aggr(df, col=c('blue','yellow'),
      numbers=TRUE, sortVars=TRUE,
      prop = c(TRUE, FALSE),
      labels=names(df), cex.axis=.6,
-     gap=3, ylab=c("Percentage missings","Patroon missings"))
+     gap=3, ylab=c("Percentage missings","Pattern of missings"))
 
 
-# Alle variabelen imputeren met PMM a.d.h.v. pakket MICE
+# Impute missing values on features using PMM in MICE-lib
 imputed_df <- mice(df[,c("...")], m=5, maxit = 50, method = 'pmm', seed = 500)
 summary(imputed_df)
 densityplot(imputed_df)
 
-# Willekeurige dataset kiezen
+# Choose random imputed df
 complete_df <- mice::complete(imputed_df,3)
 md.pattern(complete_df)
 View(complete_df)
 
-# Opslaan van de dataset met geïmputeerde missings
+# Save df
 write.csv(complete_df, "imputed_data.csv",row.names=FALSE)
