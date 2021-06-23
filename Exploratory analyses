@@ -1,33 +1,32 @@
-# Structuur dataset bekijken
+# Structure of dataset
 str(df)
 dim(df)
 head(df, 10)
 
-# Beschrijvende tabel voor enkel numerieke variabelen
-# Er zijn 2 manieren mogelijk:
-# Optie 1 is met SAPPLY-functie
+# Descriptives for all the numeric features
+# 2 options:
+# Option 1 using the SAPPLY-functie
 descr_numtab <- df %>% 
   select_if(is.numeric)
 
-gemiddelde <- as.data.frame(round(sapply(descr_numtab, mean, na.rm = TRUE),1))
-mediaan <- as.data.frame(round(sapply(descr_numtab, median, na.rm = TRUE),1))
+mean <- as.data.frame(round(sapply(descr_numtab, mean, na.rm = TRUE),1))
+median <- as.data.frame(round(sapply(descr_numtab, median, na.rm = TRUE),1))
 minimum <- as.data.frame(round(sapply(descr_numtab, min, na.rm = TRUE),1))
 maximum <- as.data.frame(round(sapply(descr_numtab, max, na.rm = TRUE),1))
 sd <- as.data.frame(round(sapply(descr_numtab, sd, na.rm = TRUE),1))
 
-descr_tabel <- cbind(minimum, maximum, mediaan, gemiddelde, sd)
+descr_table <- cbind(minimum, maximum, median, mean, sd)
 
-colnames(descr_tabel) <- c("Minimum", "Maximum", "Mediaan", "Gemiddelde", "SD")
-descr_tabel
+colnames(descr_table) <- c("Minimum", "Maximum", "Median", "Mean", "SD")
+descr_table
 
-# Optie 2 is met MUTATE functie van DPLYR
-# Beschrijvende tabel numerieke variabelen
+# Option 2 using the MUTATE function in DPLYR
 descr_num_tabel <- df %>% 
   na.omit() %>% 
   select_if(is.numeric) %>% 
   summarise_each(funs(
-    gemiddelde = mean,
-    mediaan = median,
+    mean = mean,
+    median = median,
     minimum = min,
     maximum = max,
     sd = sd))
@@ -36,13 +35,13 @@ descr_num_tabel <- descr_num_tabel %>%
   gather(stat, val) %>%
   separate(stat, into = c("var", "stat"), sep = "_") %>%
   spread(stat, val) %>%
-  select(var, gemiddelde, mediaan, minimum, maximum,sd)
+  select(var, mean, median, minimum, maximum,sd)
 
 descr_num_tabel %>% 
   mutate_at(2:6, funs(round(.,1)))
 
 
-# Spreiding van alle numerieke data m.b.v. density plots
+# Distribution of data using density plots
 dens_numplot <- df %>% 
   keep(is.numeric) %>% 
   gather() %>% 
@@ -50,12 +49,11 @@ dens_numplot <- df %>%
   geom_density(alpha = 0.2, color = "dodgerblue4", fill = "dodgerblue1")  +
   facet_wrap(~key, scales = "free") +
   theme_classic() +
-  ggtitle("Verdeling continue variabelen")
+  ggtitle("Verdeling continuous features")
 
 dens_numplot
 
-
-# Meer gedetailleerde histogram per continue variabele
+# More detailed view of a specific numeric feature
 histogramplot <- function(column) {
   
   df %>% 
@@ -63,21 +61,21 @@ histogramplot <- function(column) {
     geom_histogram(color = "darkcyan", fill = "darkcyan", binwidth = 8, alpha = 0.4) +
     stat_bin(aes(y = ..count.., label = ..count..), binwidth = 8, geom = "text", vjust = -0.5) +
     geom_vline(aes(xintercept = mean(column)), color = "red", linetype = "solid", size = 2, alpha = 0.25) +
-    labs(title= paste("Verdeling van", column),x=column, y = "Aantal") +
+    labs(title= paste("Distribution of", column),x=column, y = "Count") +
     theme_classic()
 }
 histogramplot("...")
 
 
-# Plot met verdeling van uitkomst beroerten naar leeftijdsgroepen
+# Transforming a feature: age to agegroups
 # Leeftijd opdelen in 4 categorie?n: 0 (0-20), 1 (20-45), 2 (45-65), 3 (65-85), 4 (85+)
-leeftijdsgroep <- 
-  ifelse(df$leeftijd < 20,"0-20",
-         ifelse(df$leeftijd < 45 & df$leeftijd >= 20,"20-45",
-                ifelse(df$leeftijd < 65 & df$leeftijd >= 45,"45-65",
-                       ifelse(df$leeftijd < 85 & df$leeftijd >= 65,"65-85", "85+"))))
+agegroup <- 
+  ifelse(df$age < 20,"0-20",
+         ifelse(df$age < 45 & df$age >= 20,"20-45",
+                ifelse(df$age < 65 & df$age >= 45,"45-65",
+                       ifelse(df$age < 85 & df$age >= 65,"65-85", "85+"))))
 
-uitkomstoverleeftijd <- ggplot(data = df, aes(x = leeftijdsgroep, fill = uitkomst)) +
+outcome_over_agegroup <- ggplot(data = df, aes(x = agegroup, fill = outcome)) +
   geom_bar(aes(y = prop.table(..count..) * 100),
            position = "dodge") + 
   geom_text(aes(y = prop.table(..count..) * 100 + 0.5, 
@@ -85,7 +83,7 @@ uitkomstoverleeftijd <- ggplot(data = df, aes(x = leeftijdsgroep, fill = uitkoms
             stat = 'count', 
             position = position_dodge(1), 
             size = 3) + 
-  labs(title="Verdeling uitkomst", x = 'Leeftijdsgroep', y = 'Perc. verhouding', fill = 'Uitkomst aanwezig?') +
+  labs(title="Distribution outcome", x = 'agegroup', y = 'Perc. distribution', fill = 'Outcome?') +
   theme_classic()
 
-uitkomstoverleeftijd
+outcome_over_agegroup
