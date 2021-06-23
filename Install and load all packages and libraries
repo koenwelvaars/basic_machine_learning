@@ -1,4 +1,4 @@
-# Functie voor installeren pakketten
+# Install packages with a function
 pakketinstall <- function(pkg) {
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])] 
   if (length(new.pkg))  
@@ -6,18 +6,18 @@ pakketinstall <- function(pkg) {
   sapply(pkg, require, character.only = TRUE) 
 }
 
-# Installeren en libraries inladen 
+# Install and load library
 packages <- c("...") 
 pakketinstall(packages)
 
-# Gebruikte pakketten in data prep, clean, analyse (tot aan RandomForest)
+# Used packages for this project
 
 # "ROCR", "mice", "VIM", "DMwR", "randomForest", "caret", "pscl", "glmnet", 
 # "magrittr", "rpart", "rpart.plot", "ipred", "C50", "ggcorrplot", "factoextra", 
 # "stringr", "reshape2", "RColorBrewer", "plotly", "viridis", "outliers", "reshape2", 
 # "tidyverse", "knitr", "ggfortify", "factoextra") 
 
-# Inlezen van data
+# Read in data
 getwd()
 setwd( "...")
 
