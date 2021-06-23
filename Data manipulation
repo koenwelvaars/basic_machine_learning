@@ -1,0 +1,58 @@
+# Check on features
+View(df)
+str(df)
+
+
+# Renaming features
+colnames(df)
+
+df <- df %>% 
+  rename(new1 = 'old1'
+         new2 = 'old2'
+         new.n = 'old.n')
+
+colnames(df)
+
+# Transforming numeric to nominal (missings stay NA)
+df <- df %>%
+  mutate_at(vars(...), 
+            function(x) 
+              case_when(
+                x == 0 ~ "No",
+                x == 1 ~ "Yes"))
+
+# Transforming values on numeric features
+df <- df %>%
+  mutate_at(vars(...), 
+            function(x) 
+              case_when(
+                x == 1 ~ 1,
+                x == 2 ~ 0))
+
+# Transform and split features: blood pressure (always noted as 120/80 format)
+bp_split <- str_split_fixed(df$bloodpressure, "/",2)
+bp_systolic <- as.integer(bp_split[,1])
+bp_diastolic <- as.integer(bp_split[,2])
+df <- cbind(df, bp_systolic, bp_diastolic)
+
+# Transform specific features to a specific datatype
+# note: when transforming factors to numerics the position of the value in the vector will be passed and not the actual value.
+df <- df %>%
+  mutate_at(vars(...), as.factor) %>%
+  mutate_at(vars(...), as.numeric) %>% 
+  mutate_at(vars(...), as.double)
+
+# Transform specific features to a numeric datatype
+df <- df %>% 
+  mutate(var1 = ifelse(var1 == 'This', 1, 0)) %>% 
+  mutate(var2 = ifelse(var2 == 'That', 1,0)) %>% 
+  mutate(var3 = ifelse(var3 == 'Whatever', 1, 0)) %>% 
+  select(var1..varn)
+
+# Rounding numeric vars
+df$... <- round(df$...)
+df$... <- round(df$...,1)
+df$... <- round(df$...,2)
+
+# Merging, changing columns names and sorting of features in dataset
+df <- df[,c("...")]
