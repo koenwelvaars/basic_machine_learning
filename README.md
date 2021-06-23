@@ -4,7 +4,7 @@
 In this repo you can find code of my first machine learning project: predicting recurrence of strokes at the department of Neurology. Everyone can use this code for his/her own projects, as I hope it will save everybody some time and understanding as to how to develop a machine learning model.
 
 Index of the code to topic:
-- [Loading all the packages and libraries](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Inladen%20van%20alle%20benodigde%20packages%20en%20data)
+- [Loading all the packages and libraries](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Install%20and%20load%20libraries)
 - [Data manipulation](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Data%20manipulatie)
 - [Exploratory analyses](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Beschrijvende%20statistiek)
 - [Missing values](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Omgaan%20met%20missing%20values)
