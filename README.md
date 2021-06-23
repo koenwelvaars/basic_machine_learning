@@ -5,11 +5,11 @@ In this repo you can find code of my first machine learning project: predicting 
 
 Index of the code to topic:
 - [Loading all the packages and libraries](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Install%20and%20load%20libraries)
-- [Data manipulation](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Data%20manipulatie)
-- [Exploratory analyses](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Beschrijvende%20statistiek)
-- [Missing values](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Omgaan%20met%20missing%20values)
-- [Outliers](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Omgaan%20met%20outliers)
-- [Developing a RandomForest](https://github.com/koenwelvaars/machine-learning-voorbeelden/blob/master/Ontwikkelen%20van%20een%20RandomForest)
+- [Data manipulation](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Data%20manipulation)
+- [Exploratory analyses](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Exploratory%20analyses)
+- [Missing values](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Missing%20values)
+- [Outliers](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Outliers)
+- [Developing a RandomForest](https://github.com/koenwelvaars/basic_machine_learning/blob/master/Developing%20a%20RandomForest)
 
 For questions/suggestions: feel free to contact me via k.welvaars@olvg.nl
 
