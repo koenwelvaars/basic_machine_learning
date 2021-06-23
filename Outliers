@@ -1,5 +1,5 @@
-# Outlier analyse
-# Functie voor plotten van concentratie datapunten voor x en y variabelen
+# Outlier analysis
+# Function plotting for concentration between x and y
 outlier_hexplot <- function(column_x, column_y) {
   
   hex_df <- ggplot(df, aes_string(column_x, column_y))
@@ -10,31 +10,31 @@ outlier_hexplot <- function(column_x, column_y) {
     ggtitle("Concentratie van data") +
     xlab(column_x) +
     ylab(column_y) +
-    labs(fill = "Dichtheid") 
+    labs(fill = "Density") 
   hexplot
 }
 
 outlier_hexplot("x", "y")
 
-# Tabel om outliers te onderzoeken op waarden
-uitbijters <- df %>%
+# Table to look up on outliers
+outliers <- df %>%
   dplyr::select_if(is.numeric)
 
-max_outlier <- outlier(uitbijters)
+max_outlier <- outlier(outliers)
 z_score_max <- round(scores(max_outlier),3)
 chi2_max <- round(scores(max_outlier, type = "chisq"),3)
 
-min_outlier <- outlier(uitbijters,opposite=TRUE)
+min_outlier <- outlier(outliers,opposite=TRUE)
 z_score_min <- round(scores(min_outlier),3)
 chi2_min <- round(scores(min_outlier, type = "chisq"),3)
 
-tabel_uitbijters <- as.data.frame(cbind(min_outlier,z_score_min, chi2_min,
+table_outliers <- as.data.frame(cbind(min_outlier,z_score_min, chi2_min,
                                         max_outlier,z_score_max, chi2_max))
-colnames(tabel_uitbijters) <- c("min_outlier", "min_zscore", "min_chi2", 
+colnames(table_outliers) <- c("min_outlier", "min_zscore", "min_chi2", 
                                 "max_outlier", "max_zscore", "max_chi2")
-tabel_uitbijters
+table_outliers
 
-# Functie om outliers te onderzoeken en te vervangen
+# Replace outliers with missings per feature
 outlierKD <- function(dt, var) {
   var_name <- eval(substitute(var),eval(dt))
   na1 <- sum(is.na(var_name))
@@ -49,12 +49,12 @@ outlierKD <- function(dt, var) {
   hist(var_name, main="Without outliers", xlab=NA, ylab=NA)
   title("Outlier Check", outer=TRUE)
   na2 <- sum(is.na(var_name))
-  cat("Aantal outliers geidentificeerd:", na2 - na1, "n")
-  cat("Proportie (%) van outliers:", round((na2 - na1) / sum(!is.na(var_name))*100, 1), "n")
-  cat("Gemiddelde van de outliers:", round(mo, 2), "n")
+  cat("Count of outliers indentified:", na2 - na1, "n")
+  cat("Proportion (%) of outliers:", round((na2 - na1) / sum(!is.na(var_name))*100, 1), "n")
+  cat("Mean of outliers:", round(mo, 2), "n")
   m2 <- mean(var_name, na.rm = T)
-  cat("Gemiddelde zonder verwijderen outliers:", round(m1, 2), "n")
-  cat("Gemiddelde bij verwijderen outliers:", round(m2, 2), "n")
+  cat("Mean with outliers:", round(m1, 2), "n")
+  cat("Mean without outliers:", round(m2, 2), "n")
   response <- readline(prompt="Do you want to remove outliers and to replace with NA? [yes/no]: ")
   if(response == "y" | response == "yes"){
     dt[as.character(substitute(var))] <- invisible(var_name)
@@ -67,5 +67,5 @@ outlierKD <- function(dt, var) {
   }
 }
 
-# Functie uitvoeren per variabele in dataset
-outlierKD(df, var)
+# Calling the function
+outlierKD(df, feature)
